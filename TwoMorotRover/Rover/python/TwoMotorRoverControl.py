@@ -11,20 +11,22 @@ C_Run_F = 4
 C_Run_B = 17
 C_Run_S = 27
  
- #We are using simple UDP packets to control the morots 
- #We have the Port hard coded at the momenrt. 
+# We are using simple UDP packets to control the morots 
+# We have the Port hard coded at the momenrt. #Improve
 UDP_IP = "192.168.1.206"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT)) #bind the socket to IP and port
+sock.bind((UDP_IP, UDP_PORT)) # bind the socket to IP and port
     
     
- #   Two_Motor_drive_Rover defines the two motor driver
- #  It has to be initialised with the GPIO pins. Each instance can be given a name.
+# Two_Motor_drive_Rover defines the two motor driver
+
 class Two_Motor_drive_Rover:
-    
+
+    # It has to be initialised with the GPIO pins. Each instance can be given a name.
+    # The name has to be validated by the remote controler to identify the Rover. #Improve
     def __init__(self,name,G_Turn_L,G_Turn_R,G_Turn_S,G_Run_F,G_Run_B,G_Run_S):
         self.name = name
         print ("init: ", name)
@@ -43,7 +45,7 @@ class Two_Motor_drive_Rover:
         self.Turn_S = PWMLED(G_Turn_S)
         self.Run_S = PWMLED(G_Run_S)
         # Initialize local state variables
-        self.BreakStatus = 'R' # This keeps track of the Break state. (R = Releaeed, A = Active)
+        self.BreakStatus = 'R'  # This keeps track of the Break state. (R = Releaeed, A = Active)
         self.GearPosition = 'N' # This Keeps the Gear Level (N = Neutral, R = Reverse, D = Drive and Numbers can be used)
 
  
@@ -147,41 +149,11 @@ class Two_Motor_drive_Rover:
 #Construct the Rover Named Kevin
 Rover = Two_Motor_drive_Rover ("Kevin",C_Turn_L,C_Turn_R,C_Turn_S,C_Run_F,C_Run_B,C_Run_S)
 
-# Rover.Turn('L',30)
-# sleep(1)
-# Rover.Turn('C',0)
-# sleep(1)
-# Rover.Turn('R',30)
-# sleep(1)
-# Rover.Turn('C',30)
-# sleep(1)
-# 
-# 
-# Rover.Gear('D') #Drive
-# Rover.Speed(80)
-# sleep(1)
-# Rover.Break('A') #Apply
-# sleep(1)
-# Rover.Break('R') #Release
-# sleep(1)
-# 
-# Rover.Speed(20)
-# sleep(1)
-# Rover.Speed(0)
-# sleep(1)
-# 
-# Rover.Gear('N')
-# Rover.Speed(20)
-# sleep(1)
-# Rover.Speed(0)
-# sleep(1)
-# 
-# Rover.Gear('R') #Reverse
-# Rover.Speed(20)
-# sleep(1)
-# Rover.Speed(0)
-
 print ("start")
+Rover.Break('A')  #Break Apply
+Rover.Gear('N')   #Drive back (Gear Change only)
+Rover.Turn('C',0)  #Centre
+
 # Main Loop.
 while True:
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
