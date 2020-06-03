@@ -7,13 +7,13 @@ from time import sleep
 C_Turn_L = 23
 C_Turn_R = 22
 C_Turn_S = 26
-C_Run_F = 4
-C_Run_B = 17
+C_Run_F = 17
+C_Run_B = 4
 C_Run_S = 27
  
 # We are using simple UDP packets to control the morots 
 # We have the Port hard coded at the momenrt. #Improve
-UDP_IP = "192.168.1.206"
+UDP_IP = "192.168.1.205"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET, # Internet
@@ -160,7 +160,7 @@ while True:
     #data will contain the data and addr will have the sender address
     #We can filter the host here but not implememted yet,
     print ("received message:", data)
-
+    print ("debug" , data[0],data[1],data[2],data[3])
     #Turning Functions
     if data == b'LEFT':
         Rover.Turn('L',30) #Turn Left
@@ -175,7 +175,8 @@ while True:
     elif data == b'REVR':
         Rover.Gear('R')   #Drive back (Gear Change only)
     #Now check for Speed setting
-    elif (data[0] == 83 and data [1] == 80): #if the packet is of SPnn,  S = (ASCII 82) P  =(ASCII P)
+    #print ("try speed",data[0],data[1])
+    elif (data[0] == 83 and data[1] == 80): #if the packet is of SPnn, S = (ASCII 82) P  =(ASCII P)
         if (Rover.GearPosition == 'D' or Rover.GearPosition == 'R'):
             Rover.Speed((10*(data[2]-48))+ (data[3] - 48)) #Set Speed 0 = (ASCII 48)
         else:
